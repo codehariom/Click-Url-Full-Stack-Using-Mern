@@ -7,6 +7,7 @@ if (!fs.existsSync(tempFolder)) {
   fs.mkdirSync(tempFolder, { recursive: true });
 }
 
+
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

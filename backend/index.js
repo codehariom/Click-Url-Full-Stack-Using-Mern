@@ -45,13 +45,13 @@ app.use(express.urlencoded({extended:true, limit:"200kb"}))
 // route
 import userRoute from "../backend/routes/userRoutes.js"
 import clickUrlRoute from "../backend/routes/clickUrlRoutes.js"
-import uploadRoute from "../backend/routes/uploadRoutes.js"
 import profileRoutes from '../backend/routes/profileRoutes.js'
+import uploadPicture  from "../backend/routes/uploadRoutes.js";
 
 
 
 // routes api 
 app.use("/api/user", userRoute);
 app.use("", clickUrlRoute);
-app.use("/pic",uploadRoute);
+app.use("/pic",uploadPicture)
 app.use("/api/update",profileRoutes);

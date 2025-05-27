@@ -50,26 +50,3 @@ export const userProfile = expressAsyncHandler(async (req, res) => {
 });
 
 
-// Controller to fetch the photo URL of a user by user ID
-
-
-export const getUserPic = expressAsyncHandler(async (req, res) => {
-  const { username } = req.query; // Use query or params for GET request
-
-  if (!username) {
-    return res.status(400).json({ message: "Username is required" });
-  }
-
-  try {
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ picture: user.picture });
-  } catch (error) {
-    console.error("Error fetching user photo URL:", error);
-    res.status(500).json({ message: "Server error while fetching photo URL" });
-  }
-});

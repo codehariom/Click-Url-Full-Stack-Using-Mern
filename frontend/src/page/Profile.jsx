@@ -82,10 +82,13 @@ function Profile() {
     });
 
     const handleUpload = async () => {
-        if (!file) return alert("Please select a photo");
+        if (!file) {
+            alert("Please select a photo");
+            return;
+        }
 
         const formData = new FormData();
-        formData.append('picture', file); // Must match `upload.single('picture')`
+        formData.append("picture", file);
 
         try {
             const res = await instance.post("/pic/upload", formData, {
@@ -97,23 +100,39 @@ function Profile() {
                 },
             });
             console.log("Photo uploaded:", res.data);
-            fetchPic();
+            fetchPic(); // Refresh image after upload
         } catch (error) {
-            console.error("Photo upload failed:", error);
+            console.error(
+                "Photo upload failed:",
+                error.response?.data || error.message
+            );
         }
     };
 
     const fetchPic = async () => {
         try {
-            const fetchResponse = await instance.get("/pic/picture");
-            console.log("Full response data:", fetchResponse.data); // add this line
-            setPhotoUrl(fetchResponse.data.picture); // make sure .url exists
-            console.log(
-                "Photo URL fetched successfully:",
-                fetchResponse.data.picture
-            );
+            const fetchResponse = await instance.get("/pic/picture", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "accessToken"
+                    )}`,
+                },
+            });
+
+            if (fetchResponse.data.picture) {
+                setPhotoUrl(fetchResponse.data.picture);
+                console.log(
+                    "Photo URL fetched successfully:",
+                    fetchResponse.data.picture
+                );
+            } else {
+                console.warn("Picture not found in response");
+            }
         } catch (error) {
-            console.log("Failed to fetch photo URL:", error);
+            console.error(
+                "Failed to fetch photo URL:",
+                error.response?.data || error.message
+            );
         }
     };
 
