@@ -12,8 +12,8 @@ dotenv.config();
 
 // config cors
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true // allow cookies/authorization headers if needed
+  origin: 'https://clickurl-r72u.onrender.com',
+  credentials: true, // if you're sending cookies or auth headers
 }));
 
 const port = process.env.PORT || 8001;
