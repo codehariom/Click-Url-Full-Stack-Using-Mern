@@ -11,9 +11,20 @@ const app = express();
 dotenv.config();
 
 // config cors
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://clickurl-r72u.onrender.com'
+];
+
 app.use(cors({
-  origin: process.env.cors,
-  credentials: true // allow cookies/authorization headers if needed
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
 
 const port = process.env.PORT || 8001;
