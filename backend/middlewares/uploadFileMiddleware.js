@@ -2,7 +2,7 @@ import fs from 'fs';
 import multer from 'multer';
 
 // Create destination folder if it doesn't exist
-const tempFolder = './public/temp';
+const tempFolder = './upload';
 if (!fs.existsSync(tempFolder)) {
   fs.mkdirSync(tempFolder, { recursive: true });
 }

@@ -9,7 +9,7 @@ import { getUserPic } from '../controllers/profileControllers.js';
 
 const router = express.Router();
 
-router.post('/upload', authenticateUser, upload.single("picture"), async (req, res) => {
+router.post('/upload', authenticateUser, upload.single('picture'), async (req, res) => {
   try {
 
     const username = req.user.username;
@@ -21,7 +21,7 @@ router.post('/upload', authenticateUser, upload.single("picture"), async (req, r
 
 
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'uploads',
+      folder: 'upload',
     });
 
     fs.unlinkSync(req.file.path); // delete the local file
@@ -48,7 +48,7 @@ router.post('/upload', authenticateUser, upload.single("picture"), async (req, r
 });
 
 // get photo
-router.get("/picture", authenticateUser, getUserPic);
+router.get('/picture', authenticateUser, getUserPic);
 
 export default router;
 

@@ -85,8 +85,7 @@ function Profile() {
         if (!file) return alert("Please select a photo");
 
         const formData = new FormData();
-        formData.append("picture", file); // Must match `upload.single('picture')`
-        formData.append("username", formik.values.username);
+        formData.append('picture', file); // Must match `upload.single('picture')`
 
         try {
             const res = await instance.post("/pic/upload", formData, {
