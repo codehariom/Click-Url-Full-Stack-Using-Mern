@@ -83,63 +83,25 @@ function Profile() {
         },
     });
 const handleUpload = async () => {
-    if (!file) {
-        alert("Please select a photo");
-        return;
-    }
-
-    // Verify the user is authenticated
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-        alert("Please login to upload a profile picture");
-        return;
-    }
-
-    // Decode token to get user info (if needed)
-    // Note: This is client-side only and shouldn't contain sensitive data
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    const userId = decodedToken?.sub || decodedToken?.userId;
+    if (!file) return alert("Please select a photo");
 
     const formData = new FormData();
-    formData.append("picture", file);
-    
-    // Add any additional server-required fields from token
-    formData.append("userId", userId);
+    formData.append('picture', file); // 'picture' must match backend field
 
     try {
-        const res = await instance.post("/pic/upload", formData, {
+        const res = await instance.post("/pic/upload", 
+            formData, {
             headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         });
-
-        if (res.status === 200 || res.status === 201) {
-            console.log("Photo uploaded:", res.data);
-            // Handle successful upload
-            if (res.data.picture) {
-                setPhotoUrl(res.data.picture);
-                alert("Profile picture updated successfully!");
-            }
-        } else {
-            console.error("Unexpected response:", res);
-            alert("Profile picture update failed");
-        }
+        console.log("Photo uploaded:", res.data);
+        fetchPic();
     } catch (error) {
-        console.error("Upload error:", error);
-        
-        if (error.response) {
-            if (error.response.status === 401) {
-                alert("Session expired. Please login again.");
-                // Handle logout or token refresh
-            } else {
-                alert(error.response.data?.message || "Upload failed");
-            }
-        } else {
-            alert("Network error. Please try again.");
-        }
+        console.error("Photo upload failed:", error.response?.data || error.message);
     }
 };
+
 
 const fetchPic = async () => {
     const token = localStorage.getItem("accessToken");
