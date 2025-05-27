@@ -7,10 +7,12 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 function Profile() {
+    const DEFAULT_PROFILE_IMAGE = 'https://github.com/codehariom/Click-Url-Full-Stack-Using-Mern/blob/3f80a7a223d67411c3a0a70c79cae7a997cfb65a/frontend/src/assets/logo.png';
     const { logout } = useAuth();
     const navigate = useNavigate();
-    const [photoUrl, setPhotoUrl] = useState(null);
-    const [file, setFile] = useState(null);
+    const [photoUrl, setPhotoUrl] = useState(DEFAULT_PROFILE_IMAGE);
+    const [file, setFile] = useState(false);
+    
 
     const formik = useFormik({
         initialValues: {
@@ -80,61 +82,85 @@ function Profile() {
             }
         },
     });
+const handleUpload = async () => {
+    if (!file) {
+        alert("Please select a photo");
+        return;
+    }
 
-    const handleUpload = async () => {
-        if (!file) {
-            alert("Please select a photo");
-            return;
-        }
+    // Verify the user is authenticated
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+        alert("Please login to upload a profile picture");
+        return;
+    }
 
-        const formData = new FormData();
-        formData.append("picture", file);
+    // Decode token to get user info (if needed)
+    // Note: This is client-side only and shouldn't contain sensitive data
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const userId = decodedToken?.sub || decodedToken?.userId;
 
-        try {
-            const res = await instance.post("/pic/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "accessToken"
-                    )}`,
-                },
-            });
+    const formData = new FormData();
+    formData.append("picture", file);
+    
+    // Add any additional server-required fields from token
+    formData.append("userId", userId);
+
+    try {
+        const res = await instance.post("/pic/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (res.status === 200 || res.status === 201) {
             console.log("Photo uploaded:", res.data);
-            fetchPic(); // Refresh image after upload
-        } catch (error) {
-            console.error(
-                "Photo upload failed:",
-                error.response?.data || error.message
-            );
-        }
-    };
-
-    const fetchPic = async () => {
-        try {
-            const fetchResponse = await instance.get("/pic/picture", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "accessToken"
-                    )}`,
-                },
-            });
-
-            if (fetchResponse.data.picture) {
-                setPhotoUrl(fetchResponse.data.picture);
-                console.log(
-                    "Photo URL fetched successfully:",
-                    fetchResponse.data.picture
-                );
-            } else {
-                console.warn("Picture not found in response");
+            // Handle successful upload
+            if (res.data.picture) {
+                setPhotoUrl(res.data.picture);
+                alert("Profile picture updated successfully!");
             }
-        } catch (error) {
-            console.error(
-                "Failed to fetch photo URL:",
-                error.response?.data || error.message
-            );
+        } else {
+            console.error("Unexpected response:", res);
+            alert("Profile picture update failed");
         }
-    };
+    } catch (error) {
+        console.error("Upload error:", error);
+        
+        if (error.response) {
+            if (error.response.status === 401) {
+                alert("Session expired. Please login again.");
+                // Handle logout or token refresh
+            } else {
+                alert(error.response.data?.message || "Upload failed");
+            }
+        } else {
+            alert("Network error. Please try again.");
+        }
+    }
+};
+
+const fetchPic = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
+    try {
+        const response = await instance.get("/pic/picture", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.data?.picture) {
+            setPhotoUrl(response.data.picture);
+        }
+    } catch (error) {
+        console.error("Error fetching profile picture:", error);
+        // Set default image if fetch fails
+        setPhotoUrl(DEFAULT_PROFILE_IMAGE);
+    }
+};
 
     useEffect(() => {
         fetchPic();

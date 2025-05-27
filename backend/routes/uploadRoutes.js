@@ -4,6 +4,6 @@ import { authenticateUser } from "../middlewares/validateTokenHandler.js";
 
 const router = express.Router()
 router.get('/picture', authenticateUser, getUserPic);
-router.post('/upload' , authenticateUser,...uploadPicture)
+router.post('/upload' , authenticateUser, uploadPicture)
 
 export default router;

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/userModel.js";
 import expressAsyncHandler from "express-async-handler";
-import { request } from "express";
+
 
 export const userProfile = expressAsyncHandler(async (req, res) => {
   try {
