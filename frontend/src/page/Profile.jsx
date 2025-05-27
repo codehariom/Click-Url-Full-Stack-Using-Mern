@@ -89,7 +89,7 @@ function Profile() {
         // formData.append("username", formik.values.username);
 
         try {
-            const res = await instance.post('/pic/upload', formData, {
+            const res = await instance.post("/pic/upload", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${localStorage.getItem(
