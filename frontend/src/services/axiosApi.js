@@ -5,7 +5,7 @@ const accessToken = typeof window !== "undefined" ? localStorage.getItem("access
 
 // Create Axios instance
 export const instance = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "https://click-url.onrender.com",
   headers: {
     "Content-Type": "application/json",
     "Authorization": accessToken ? `Bearer ${accessToken}` : "",
