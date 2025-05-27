@@ -89,14 +89,16 @@ function Profile() {
         // formData.append("username", formik.values.username);
 
         try {
-            const res = await instance.post("/pic/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "accessToken"
-                    )}`,
-                },
-            });
+            const res = await instance.post('/pic/upload', formData, 
+            //     {
+            //     headers: {
+            //         "Content-Type": "multipart/form-data",
+            //         Authorization: `Bearer ${localStorage.getItem(
+            //             "accessToken"
+            //         )}`,
+            //     },
+            // }
+        );
             console.log("Photo uploaded:", res.data);
             fetchPic();
         } catch (error) {
