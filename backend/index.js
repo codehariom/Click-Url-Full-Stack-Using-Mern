@@ -12,7 +12,8 @@ dotenv.config();
 
 // config cors
 app.use(cors({
-    origin:process.env.corsOrigin
+  origin: 'http://localhost:5173',
+  credentials: true // allow cookies/authorization headers if needed
 }));
 
 const port = process.env.PORT || 8001;
