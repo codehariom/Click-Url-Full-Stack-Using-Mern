@@ -86,7 +86,7 @@ function Profile() {
 
         const formData = new FormData();
         formData.append("picture", file); // Must match `upload.single('picture')`
-        // formData.append("username", formik.values.username);
+        formData.append("username", formik.values.username);
 
         try {
             const res = await instance.post("/pic/upload", formData, {
