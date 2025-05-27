@@ -20,7 +20,7 @@ const port = process.env.PORT || 8001;
 // Connecting database
 connectDb().then(() => {
     app.listen(port, () => {
-        console.log(`Server is running on http://localhost:${port}`);
+        console.log(`Server is running on https://click-url.onrender.com`);
     });
 }).catch(err => {
     console.error("Failed to connect to DB:", err);
