@@ -82,25 +82,36 @@ function Profile() {
             }
         },
     });
-const handleUpload = async () => {
-    if (!file) return alert("Please select a photo");
+const handleUpload = async (file) => {
+  if (!file) {
+    alert('No file selected');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('picture', file); // 'picture' must match backend field
+  const token = localStorage.getItem("accessToken"); // Get token here
+  const formData = new FormData();
+  formData.append('picture', file); // 'picture' must match multer's field
 
-    try {
-        const res = await instance.post("/pic/upload", 
-            formData, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-        });
-        console.log("Photo uploaded:", res.data);
-        fetchPic();
-    } catch (error) {
-        console.error("Photo upload failed:", error.response?.data || error.message);
-    }
+  try {
+    const response = await fetch('https://click-url.onrender.com/pic/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Upload failed');
+
+    console.log('Upload success:', data);
+    setPhotoUrl(data.picture); // optional: refresh image
+
+  } catch (error) {
+    console.error('Photo upload failed:', error.message);
+  }
 };
+
 
 
 const fetchPic = async () => {
@@ -144,7 +155,7 @@ const fetchPic = async () => {
                 />
                 <button
                     type="button"
-                    onClick={handleUpload}
+                    onClick={() => handleUpload(file)}
                     className="px-10 py-2 text-xl w-fit rounded-[6px] bg-black text-white"
                 >
                     Upload
