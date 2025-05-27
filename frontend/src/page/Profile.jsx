@@ -85,20 +85,18 @@ function Profile() {
         if (!file) return alert("Please select a photo");
 
         const formData = new FormData();
-        formData.append("picture", file); // Must match `upload.single('picture')`
+        formData.append('picture', file); // Must match `upload.single('picture')`
         // formData.append("username", formik.values.username);
 
         try {
-            const res = await instance.post('/pic/upload', formData, 
-            //     {
-            //     headers: {
-            //         "Content-Type": "multipart/form-data",
-            //         Authorization: `Bearer ${localStorage.getItem(
-            //             "accessToken"
-            //         )}`,
-            //     },
-            // }
-        );
+            const res = await instance.post('/pic/upload', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "accessToken"
+                    )}`,
+                },
+            });
             console.log("Photo uploaded:", res.data);
             fetchPic();
         } catch (error) {

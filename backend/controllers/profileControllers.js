@@ -54,11 +54,14 @@ export const userProfile = expressAsyncHandler(async (req, res) => {
 
 
 export const getUserPic = expressAsyncHandler(async (req, res) => {
-  try {
-    // Get user info from request (set by authenticateUser middleware)
-    const userId = req.user._id;
+  const { username } = req.query; // Use query or params for GET request
 
-    const user = await User.findById(userId);
+  if (!username) {
+    return res.status(400).json({ message: "Username is required" });
+  }
+
+  try {
+    const user = await User.findOne({ username });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
