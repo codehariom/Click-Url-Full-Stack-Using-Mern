@@ -82,33 +82,40 @@ function Profile() {
             }
         },
     });
+
+    
 const handleUpload = async (file) => {
   if (!file) {
     alert('No file selected');
     return;
   }
 
-  const token = localStorage.getItem("accessToken"); // Get token here
+  const token = localStorage.getItem("accessToken");
   const formData = new FormData();
-  formData.append('picture', file); // 'picture' must match multer's field
+  formData.append('picture', file);
 
   try {
     const response = await fetch('https://click-url.onrender.com/pic/upload', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}`  },
       body: formData,
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Upload failed');
+    if (!response.ok) {
+      console.error('Server response:', data); // Log full server response
+      throw new Error(data.error || `HTTP ${response.status}: Upload failed`);
+    }
 
     console.log('Upload success:', data);
-    setPhotoUrl(data.picture); // optional: refresh image
+    setPhotoUrl(data.picture);
 
   } catch (error) {
-    console.error('Photo upload failed:', error.message);
+    console.error('Upload error:', {
+      message: error.message,
+      stack: error.stack, // For debugging async issues
+    });
+    alert('Upload failed. Check console for details.');
   }
 };
 
